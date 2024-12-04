@@ -20,3 +20,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+form .form-control {
+    width: 50%; 
+    margin-bottom: 10px;
+}
+
+form .form-group:last-of-type {
+    margin-bottom: 20px; 
+}
+
+form .btn {
+    margin-right: 10px;
+}
