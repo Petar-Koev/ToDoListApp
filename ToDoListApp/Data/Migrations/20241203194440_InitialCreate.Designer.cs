@@ -11,7 +11,7 @@ using ToDoListApp.Data;
 
 namespace ToDoListApp.Data.Migrations
 {
-    [DbContext(typeof(DbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20241203194440_InitialCreate")]
     partial class InitialCreate
     {

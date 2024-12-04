@@ -1,13 +1,20 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ToDoListApp.Services.Interfaces;
+using ToDoListApp.Services;
+using ToDoListApp.Repositories;
+using ToDoListApp.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ToDoListApp.Data.DbContext>(options =>
+builder.Services.AddDbContext<ToDoListApp.Data.AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddScoped<IToDoListRepository, ToDoListRepository>();
+builder.Services.AddScoped<IToDoListService, ToDoListService>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.SignIn.RequireConfirmedAccount = false;
@@ -16,7 +23,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.Password.RequireUppercase = true;
     options.Password.RequiredLength = 12;
 })
-    .AddEntityFrameworkStores<ToDoListApp.Data.DbContext>();
+    .AddEntityFrameworkStores<ToDoListApp.Data.AppDbContext>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

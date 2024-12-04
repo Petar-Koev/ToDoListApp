@@ -9,7 +9,7 @@ using ToDoListApp.Data;
 
 namespace ToDoListApp.Data.Migrations
 {
-    [DbContext(typeof(DbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {

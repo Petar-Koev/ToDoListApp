@@ -4,9 +4,9 @@ using System.Reflection.Emit;
 
 namespace ToDoListApp.Data
 {
-    public class DbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext
     {
-        public DbContext(DbContextOptions<DbContext> options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
@@ -39,7 +39,7 @@ namespace ToDoListApp.Data
         }
 
         public DbSet<Category> Categories { get; set; }
-        public DbSet<List> Lists { get; set; }
+        public DbSet<ToDoList> ToDoLists { get; set; }
         public DbSet<ToDo> Todos { get; set; }
         public DbSet<Subtask> Subtasks { get; set; }
         public DbSet<Achievement> Achievements { get; set; }

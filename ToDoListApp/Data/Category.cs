@@ -13,6 +13,6 @@ namespace ToDoListApp.Data
         [MinLength(EntityNameMinLength)]
         public string Name { get; set; } = null!;
 
-        public ICollection<List> Lists { get; set; } = new List<List>();
+        public ICollection<ToDoList> Lists { get; set; } = new List<ToDoList>();
     }
 }

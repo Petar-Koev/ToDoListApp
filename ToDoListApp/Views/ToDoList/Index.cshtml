@@ -1,0 +1,35 @@
+﻿@model IEnumerable<ToDoListViewModel>
+
+<h1>Dashboard</h1>
+
+<div class="text-center">
+    <a asp-action="Create" class="btn btn-primary">Add New List</a>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8 mx-auto">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var list in Model)
+                {
+                    <tr>
+                        <td>@list.Name</td>
+                        <td>@list.CategoryName</td>
+                        <td>
+                            <a asp-action="Open" asp-route-id="@list.Id" class="btn btn-info">Open</a>
+                            <a asp-action="Edit" asp-route-id="@list.Id" class="btn btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@list.Id" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

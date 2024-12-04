@@ -27,7 +27,7 @@ namespace ToDoListApp.Data
         public int ListId { get; set; }
 
         [ForeignKey(nameof(ListId))]
-        public List List { get; set; } = null!;
+        public ToDoList List { get; set; } = null!;
 
         public ICollection<Subtask> Subtasks { get; set; } = new List<Subtask>();
     }

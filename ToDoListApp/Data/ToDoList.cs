@@ -5,7 +5,7 @@ using static ToDoListApp.Constants.EntityValidationConstants;
 
 namespace ToDoListApp.Data
 {
-    public class List
+    public class ToDoList
     {
         [Key]
         public int Id { get; set; }
