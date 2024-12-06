@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToDoListApp.Data;
+using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Services.Interfaces;
 
@@ -58,24 +59,27 @@ namespace ToDoListApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var list = await _toDoListService.GetListByIdAsync(id);
-            if (list == null)
+            try
+            {
+                var list = await _toDoListService.GetListByIdAsync(id);
+                var categories = await _categoryService.GetAllCategoriesAsync();
+
+                var viewModel = new ToDoListViewModel
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                    Description = list.Description,
+                    CategoryId = list.CategoryId,
+                    Categories = categories
+                };
+
+                return View(viewModel);
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
 
-            var categories = await _categoryService.GetAllCategoriesAsync();
-
-            var viewModel = new ToDoListViewModel
-            {
-                Id = list.Id,
-                Name = list.Name,
-                Description = list.Description,
-                CategoryId = list.CategoryId,
-                Categories = categories
-            };
-
-            return View(viewModel);
         }
 
         [HttpPost]
@@ -93,7 +97,7 @@ namespace ToDoListApp.Controllers
                 await _toDoListService.UpdateListAsync(model);
                 return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch (NotFoundException)
             {
                 return NotFound();
             }
@@ -102,19 +106,21 @@ namespace ToDoListApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var list = await _toDoListService.GetListByIdAsync(id);
-            if (list == null)
+            try
+            {
+                var list = await _toDoListService.GetListByIdAsync(id);
+                var viewModel = new ToDoListViewModel
+                {
+                    Id = list.Id,
+                    Name = list.Name,
+                };
+
+                return View(viewModel);
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            var viewModel = new ToDoListViewModel
-            {
-                Id = list.Id,
-                Name = list.Name,
-            };
-
-            return View(viewModel);
         }
 
         [HttpPost]
@@ -126,7 +132,7 @@ namespace ToDoListApp.Controllers
                 await _toDoListService.DeleteListAsync(id);
                 return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch (NotFoundException)
             {
                 return NotFound();
             }

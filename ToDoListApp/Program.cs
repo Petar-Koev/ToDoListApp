@@ -45,6 +45,7 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseStatusCodePagesWithReExecute("/Home/CustomError", "?statusCode={0}");
 app.UseRouting();
 
 app.UseAuthorization();

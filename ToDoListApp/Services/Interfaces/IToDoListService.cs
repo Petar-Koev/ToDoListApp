@@ -7,7 +7,7 @@ namespace ToDoListApp.Services.Interfaces
     {
         Task<List<ToDoListInfoViewModel>> GetListsForUserAsync(string userId);
         Task AddListAsync(ToDoListViewModel list, string userId);
-        Task<ToDoList?> GetListByIdAsync(int id);
+        Task<ToDoList> GetListByIdAsync(int id);
         Task UpdateListAsync(ToDoListViewModel list);
         Task DeleteListAsync(int id);
     }

@@ -1,4 +1,5 @@
 ﻿using ToDoListApp.Data;
+using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Repositories;
 using ToDoListApp.Repositories.Interfaces;
@@ -41,9 +42,11 @@ namespace ToDoListApp.Services
             await _toDoListRepository.AddListAsync(newList);
         }
 
-        public async Task<ToDoList?> GetListByIdAsync(int id)
+        public async Task<ToDoList> GetListByIdAsync(int id)
         {
-            return await _toDoListRepository.GetListByIdAsync(id);
+            var list =  await _toDoListRepository.GetListByIdAsync(id);
+
+            return list ?? throw new NotFoundException($"List with ID {id} not found.");
         }
 
         public async Task UpdateListAsync(ToDoListViewModel list)
@@ -53,11 +56,7 @@ namespace ToDoListApp.Services
                 throw new ArgumentException("List ID cannot be null.", nameof(list.Id));
             }
 
-            var existingList = await _toDoListRepository.GetListByIdAsync(list.Id.Value);
-            if (existingList == null)
-            {
-                throw new Exception();
-            }
+            var existingList = await GetListByIdAsync(list.Id.Value);
 
             existingList.Name = list.Name;
             existingList.Description = list.Description;
@@ -68,11 +67,7 @@ namespace ToDoListApp.Services
 
         public async Task DeleteListAsync(int id)
         {
-            var existingList = await _toDoListRepository.GetListByIdAsync(id);
-            if (existingList == null)
-            {
-                throw new Exception();
-            }
+            var existingList = await GetListByIdAsync(id);
 
             existingList.IsDeleted = true; 
             await _toDoListRepository.UpdateListAsync(existingList);
