@@ -20,5 +20,24 @@ namespace ToDoListApp.Repositories
                 .Include(l => l.Category)
                 .ToListAsync();
         }
+
+        public async Task AddListAsync(ToDoList list)
+        {
+            _context.ToDoLists.Add(list);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ToDoList?> GetListByIdAsync(int id)
+        {
+            return await _context.ToDoLists
+                .Include(l => l.Category) 
+                .FirstOrDefaultAsync(l => l.Id == id);
+        }
+
+        public async Task UpdateListAsync(ToDoList list)
+        {
+            _context.ToDoLists.Update(list);
+            await _context.SaveChangesAsync();
+        }
     }
 }

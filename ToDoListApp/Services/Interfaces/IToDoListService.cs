@@ -1,9 +1,14 @@
-﻿using ToDoListApp.Models;
+﻿using ToDoListApp.Data;
+using ToDoListApp.Models;
 
 namespace ToDoListApp.Services.Interfaces
 {
     public interface IToDoListService
     {
-        Task<List<ToDoListViewModel>> GetListsForUserAsync(string userId);
+        Task<List<ToDoListInfoViewModel>> GetListsForUserAsync(string userId);
+        Task AddListAsync(ToDoListViewModel list, string userId);
+        Task<ToDoList?> GetListByIdAsync(int id);
+        Task UpdateListAsync(ToDoListViewModel list);
+        Task DeleteListAsync(int id);
     }
 }

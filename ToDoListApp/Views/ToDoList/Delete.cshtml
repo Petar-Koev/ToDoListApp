@@ -1,0 +1,15 @@
+﻿@model ToDoListViewModel
+
+<h1>Delete ToDo List</h1>
+<p>This action will delete the following list!</p>
+<p>Are you sure you want to remove it?</p>
+
+<div class="form-group">
+    <label>Name: @Model.Name</label>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

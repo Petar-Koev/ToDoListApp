@@ -4,8 +4,10 @@ using static ToDoListApp.Constants.EntityValidationConstants;
 
 namespace ToDoListApp.Models
 {
-    public class CreateToDoListViewModel
+    public class ToDoListViewModel
     {
+        public int? Id { get; set; }
+
         [Required]
         [MaxLength(EntityNameMaxLength)]
         [MinLength(EntityNameMinLength)]

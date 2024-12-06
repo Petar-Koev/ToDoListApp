@@ -21,6 +21,10 @@ body {
   margin-bottom: 60px;
 }
 
+.form-group {
+    margin-bottom: 20px;
+}
+
 form .form-control {
     width: 50%; 
     margin-bottom: 10px;

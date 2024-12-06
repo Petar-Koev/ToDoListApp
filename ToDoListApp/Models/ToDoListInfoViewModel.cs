@@ -2,7 +2,7 @@
 
 namespace ToDoListApp.Models
 {
-    public class ToDoListViewModel
+    public class ToDoListInfoViewModel
     {
         public int Id { get; set; }
 
