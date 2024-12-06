@@ -1,0 +1,66 @@
+﻿@model OpenListViewModel
+
+<h1>@Model.ListName</h1>
+
+<a asp-action="Add" asp-route-listId="@Model.ListId" class="btn btn-primary">Add ToDo</a>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var todo in Model.Todos)
+        {
+            <tr>
+                <td style="@(todo.IsChecked ? "text-decoration: line-through; color: red;" : "")">
+                    @todo.Name
+                </td>
+                <td>
+                    @if (todo.IsChecked)
+                    {
+                        <form asp-action="Uncheck" asp-route-id="@todo.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-success">Uncheck</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Check" asp-route-id="@todo.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-primary">Check</button>
+                        </form>
+                        <a asp-action="Edit" asp-route-id="@todo.Id" class="btn btn-warning">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@todo.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    @if (todo.HasSubtasks)
+                    {
+                        <button class="btn btn-info" onclick="toggleTasks(@todo.Id)">Show Tasks</button>
+                    }
+                    }
+                </td>
+            </tr>
+            <tr id="tasks-@todo.Id" style="display:none;">
+                <td colspan="2">
+                    <ul>
+                        @foreach (var subtask in todo.Subtasks)
+                        {
+                            <li>
+                                <input type="checkbox" @(subtask.IsCompleted ? "checked" : "") />
+                                @subtask.Name
+                            </li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    function toggleTasks(todoId) {
+        var tasksRow = document.getElementById(`tasks-${todoId}`);
+        tasksRow.style.display = tasksRow.style.display === "none" ? "table-row" : "none";
+    }
+</script>

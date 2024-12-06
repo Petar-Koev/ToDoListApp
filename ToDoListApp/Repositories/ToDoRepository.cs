@@ -1,0 +1,24 @@
+﻿using Microsoft.EntityFrameworkCore;
+using ToDoListApp.Data;
+using ToDoListApp.Repositories.Interfaces;
+
+namespace ToDoListApp.Repositories
+{
+    public class ToDoRepository : IToDoRepository
+    {
+        private readonly AppDbContext _context;
+
+        public ToDoRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<ToDo>> GetTodosByListIdAsync(int listId)
+        {
+            return await _context.Todos
+                .Where(t => t.ListId == listId)
+                .Include(t => t.Subtasks) 
+                .ToListAsync();
+        }
+    }
+}

@@ -10,5 +10,6 @@ namespace ToDoListApp.Services.Interfaces
         Task<ToDoList> GetListByIdAsync(int id);
         Task UpdateListAsync(ToDoListViewModel list);
         Task DeleteListAsync(int id);
+        Task<string> GetListNameByIdAsync(int id);
     }
 }

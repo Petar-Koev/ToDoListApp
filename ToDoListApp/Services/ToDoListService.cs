@@ -1,7 +1,6 @@
 ﻿using ToDoListApp.Data;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
-using ToDoListApp.Repositories;
 using ToDoListApp.Repositories.Interfaces;
 using ToDoListApp.Services.Interfaces;
 
@@ -72,5 +71,13 @@ namespace ToDoListApp.Services
             existingList.IsDeleted = true; 
             await _toDoListRepository.UpdateListAsync(existingList);
         }
+
+        public async Task<string> GetListNameByIdAsync(int id)
+        {
+            var list = await GetListByIdAsync(id);
+           
+            return list.Name;
+        }
+
     }
 }

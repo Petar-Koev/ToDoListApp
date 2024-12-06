@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ToDoListApp.Data;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Services.Interfaces;
@@ -79,7 +78,6 @@ namespace ToDoListApp.Controllers
             {
                 return NotFound();
             }
-
         }
 
         [HttpPost]

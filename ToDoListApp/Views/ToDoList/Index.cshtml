@@ -23,7 +23,7 @@
                         <td>@list.Name</td>
                         <td>@list.CategoryName</td>
                         <td>
-                            <a asp-action="Open" asp-route-id="@list.Id" class="btn btn-info">Open</a>
+                            <a asp-controller="ToDo" asp-action="Index" asp-route-listId="@list.Id" class="btn btn-info">Open</a>
                             <a asp-action="Edit" asp-route-id="@list.Id" class="btn btn-warning">Edit</a>
                             <a asp-action="Delete" asp-route-id="@list.Id" class="btn btn-danger">Delete</a>
                         </td>
