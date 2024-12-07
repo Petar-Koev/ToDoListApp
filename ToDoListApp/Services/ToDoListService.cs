@@ -28,6 +28,13 @@ namespace ToDoListApp.Services
 
         public async Task AddListAsync(ToDoListViewModel list, string userId)
         {
+            bool isDuplicateName = await _toDoListRepository.ListNameExistsAsync(list.Name, userId);
+
+            if (isDuplicateName)
+            {
+                throw new ArgumentException("List name already exists.");
+            }
+
             var newList = new ToDoList
             {
                 Name = list.Name,

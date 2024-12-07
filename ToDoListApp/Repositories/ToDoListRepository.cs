@@ -41,5 +41,12 @@ namespace ToDoListApp.Repositories
             _context.ToDoLists.Update(list);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ListNameExistsAsync(string name, string userId)
+        {
+            return await _context.ToDoLists
+                .AnyAsync(l => l.Name == name && l.UserId == userId && !l.IsDeleted);
+        }
+
     }
 }

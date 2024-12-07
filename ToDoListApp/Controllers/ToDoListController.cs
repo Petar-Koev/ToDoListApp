@@ -49,10 +49,19 @@ namespace ToDoListApp.Controllers
                 return View(model);
             }
 
-            var userId = _userManager.GetUserId(User) ?? string.Empty; 
-            await _toDoListService.AddListAsync(model, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(User) ?? string.Empty;
+                await _toDoListService.AddListAsync(model, userId);
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (ArgumentException ex)
+            {
+                model.Categories = await _categoryService.GetAllCategoriesAsync();
+                ModelState.AddModelError("Name", ex.Message);
+                return View(model);
+            }
         }
 
         [HttpGet]
