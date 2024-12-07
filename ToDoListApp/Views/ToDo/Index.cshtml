@@ -42,26 +42,11 @@
                         </form>
                     @if (todo.HasSubtasks)
                     {
-                        <button class="btn btn-info" onclick="toggleTasks(@todo.Id)">Show Tasks</button>
+                            <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" class="btn btn-info">Show Tasks</a>
                     }
                     }
-                </td>
-            </tr>
-            <tr id="tasks-@todo.Id" style="display:none;">
-                <td colspan="2">
-                    <ul>
-                        @foreach (var subtask in todo.Subtasks)
-                        {
-                            <li>
-                                <input type="checkbox" @(subtask.IsCompleted ? "checked" : "") />
-                                @subtask.Name
-                            </li>
-                        }
-                    </ul>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-<script src="~/js/site.js"></script>

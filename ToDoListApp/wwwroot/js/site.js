@@ -4,6 +4,7 @@ function validateTask(taskName, taskContainer) {
     return existingTasks.some(task => task.value === taskName);
 }
 
+
 function createRemoveButton(li) {
     const removeButton = document.createElement('button');
     removeButton.textContent = 'X';
@@ -60,8 +61,47 @@ function addTask() {
     taskNameInput.value = '';
 }
 
-// Index ToDo
-function toggleTasks(todoId) {
-    var tasksRow = document.getElementById(`tasks-${todoId}`);
-    tasksRow.style.display = tasksRow.style.display === "none" ? "table-row" : "none";
+// Add Subtask
+let addedTasks = [];
+let deletedTasks = [];
+
+function removeTask(button, taskId) {
+    const row = button.closest('tr');
+    row.remove();
+
+    if (taskId) {
+        deletedTasks.push(taskId);
+    }
+}
+
+function addSubTask() {
+    const taskNameInput = document.getElementById('NewTaskName');
+    const taskContainer = document.getElementById('SubTaskContainer');
+    const subTaskError = document.getElementById('SubTaskError');
+    const taskName = taskNameInput.value.trim();
+
+    subTaskError.textContent = '';
+
+    if (taskName === '') {
+        subTaskError.textContent = 'Task name cannot be empty!';
+        return;
+    }
+
+    if (validateTask(taskName, taskContainer)) {
+        subTaskError.textContent = 'Task with the same name already exists!';
+        return;
+    }
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+                <td>
+                    <input type="checkbox" name="Tasks[].IsCompleted" value="false" />
+                    <input type="hidden" name="Tasks[].Name" value="${taskName}" />
+                    ${taskName}
+                </td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button></td>
+            `;
+
+    taskContainer.appendChild(row);
+    taskNameInput.value = '';
 }

@@ -1,0 +1,44 @@
+﻿@model List<SubtaskViewModel>
+
+<h1>Manage Subtasks</h1>
+
+<form asp-action="SaveTasks" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="SubTaskContainer">
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="Tasks[@i].IsCompleted" value="true" @(Model[i].IsCompleted ? "checked" : "") />
+                        <input type="hidden" name="Tasks[@i].Id" value="@Model[i].Id" />
+                        <input type="hidden" name="Tasks[@i].Name" value="@Model[i].Name" />
+                        @Model[i].Name
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this, @Model[i].Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <label for="NewTaskName">Add New Task</label>
+        <input type="text" id="NewTaskName" class="form-control" placeholder="Task name" />
+        <p id="SubTaskError" class="text-danger"></p>
+        <button type="button" class="btn btn-primary mt-2" onclick="addSubTask()">Add Task</button>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+<script src="~/js/site.js"></script>
