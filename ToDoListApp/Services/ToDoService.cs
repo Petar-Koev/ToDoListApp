@@ -47,6 +47,12 @@ namespace ToDoListApp.Services
         {
             // Checking if the list is valid
             await _toDoListService.GetListByIdAsync(model.ListId);
+            var isDuplicateName = await _repository.ToDoNameExistsAsync(model.Name, model.ListId);
+
+            if (isDuplicateName)
+            {
+                throw new ArgumentException("A ToDo with the same name already exists and is not completed.");
+            }
 
             var todo = new ToDo
             {

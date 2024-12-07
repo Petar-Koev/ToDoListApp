@@ -27,5 +27,10 @@ namespace ToDoListApp.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> ToDoNameExistsAsync(string name, int listId)
+        {
+            return await _context.Todos
+                .AnyAsync(t => t.Name == name && t.ListId == listId && !t.IsCompleted);
+        }
     }
 }

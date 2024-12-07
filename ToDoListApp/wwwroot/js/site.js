@@ -1,30 +1,61 @@
 ﻿// Add ToDo
-function addTask() {
-    const taskNameInput = document.getElementById('TaskName');
-    const taskContainer = document.getElementById('TaskContainer');
-
-    if (taskNameInput.value.trim() === '') {
-        alert('Task name cannot be empty!');
-        return;
-    }
-
-    const li = document.createElement('li');
-    li.textContent = taskNameInput.value;
-
+function validateTask(taskName, taskContainer) {
+    const existingTasks = Array.from(taskContainer.querySelectorAll('input[name="Tasks"]'));
+    return existingTasks.some(task => task.value === taskName);
+}
+function createRemoveButton(li) {
     const removeButton = document.createElement('button');
     removeButton.textContent = 'X';
     removeButton.className = 'remove-button';
     removeButton.onclick = () => li.remove();
+    return removeButton;
+}
 
-    li.appendChild(removeButton);
-    taskContainer.appendChild(li);
+function createTaskElement(taskName) {
+    const li = document.createElement('li');
+
+    const taskContent = document.createElement('div');
+    taskContent.className = 'task-content'; 
+
+    const taskNameSpan = document.createElement('span');
+    taskNameSpan.textContent = taskName;
+
+    taskContent.appendChild(createRemoveButton(li));
+    taskContent.appendChild(taskNameSpan);
+
+    li.appendChild(taskContent);
 
     const hiddenInput = document.createElement('input');
     hiddenInput.type = 'hidden';
     hiddenInput.name = 'Tasks';
-    hiddenInput.value = taskNameInput.value;
+    hiddenInput.value = taskName;
 
     li.appendChild(hiddenInput);
+
+    return li;
+}
+
+function addTask() {
+    const taskNameInput = document.getElementById('TaskName');
+    const taskContainer = document.getElementById('TaskContainer');
+    const taskError = document.getElementById('TaskError');
+    const taskName = taskNameInput.value.trim();
+
+    taskError.textContent = '';
+
+    if (taskName === '') {
+        taskError.textContent = 'Task name cannot be empty!';
+        return;
+    }
+
+    if (validateTask(taskName, taskContainer)) {
+        taskError.textContent = 'Task with the same name already exists!';
+        return;
+    }
+
+    const newTaskElement = createTaskElement(taskName);
+    taskContainer.appendChild(newTaskElement);
+
     taskNameInput.value = '';
 }
 

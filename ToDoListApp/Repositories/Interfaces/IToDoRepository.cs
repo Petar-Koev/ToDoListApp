@@ -6,5 +6,6 @@ namespace ToDoListApp.Repositories.Interfaces
     {
         Task<List<ToDo>> GetTodosByListIdAsync(int listId);
         Task AddToDoAsync(ToDo todo);
+        Task<bool> ToDoNameExistsAsync(string name, int listId);
     }
 }
