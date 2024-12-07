@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToDoListApp.Exceptions;
+using ToDoListApp.Models;
+using ToDoListApp.Services;
 using ToDoListApp.Services.Interfaces;
 
 namespace ToDoListApp.Controllers
@@ -25,5 +27,39 @@ namespace ToDoListApp.Controllers
                 return NotFound();
             }
         }
+
+        [HttpGet]
+        public IActionResult Add(int listId)
+        {
+            var viewModel = new AddToDoViewModel();
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add(AddToDoViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                await _toDoService.AddToDoAsync(model);
+                return RedirectToAction("Index", new { listId = model.ListId });
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError("Name", ex.Message);
+                return View(model);
+            }
+        }
+
+
     }
 }

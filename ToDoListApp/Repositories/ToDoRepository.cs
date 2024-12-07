@@ -20,5 +20,12 @@ namespace ToDoListApp.Repositories
                 .Include(t => t.Subtasks) 
                 .ToListAsync();
         }
+
+        public async Task AddToDoAsync(ToDo todo)
+        {
+            _context.Todos.Add(todo);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
