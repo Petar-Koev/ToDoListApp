@@ -1,8 +1,9 @@
 ﻿// Add ToDo
 function validateTask(taskName, taskContainer) {
-    const existingTasks = Array.from(taskContainer.querySelectorAll('input[name="Tasks"]'));
+    const existingTasks = Array.from(taskContainer.querySelectorAll('input[name^="Tasks["]')); 
     return existingTasks.some(task => task.value === taskName);
 }
+
 function createRemoveButton(li) {
     const removeButton = document.createElement('button');
     removeButton.textContent = 'X';
@@ -24,13 +25,6 @@ function createTaskElement(taskName) {
     taskContent.appendChild(taskNameSpan);
 
     li.appendChild(taskContent);
-
-    const hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'Tasks';
-    hiddenInput.value = taskName;
-
-    li.appendChild(hiddenInput);
 
     return li;
 }
@@ -54,6 +48,13 @@ function addTask() {
     }
 
     const newTaskElement = createTaskElement(taskName);
+
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = `Tasks[${taskContainer.children.length}].Name`;
+    hiddenInput.value = taskName;
+   
+    newTaskElement.appendChild(hiddenInput);
     taskContainer.appendChild(newTaskElement);
 
     taskNameInput.value = '';
