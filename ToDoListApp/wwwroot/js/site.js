@@ -62,16 +62,12 @@ function addTask() {
 }
 
 // Add Subtask
-let addedTasks = [];
-let deletedTasks = [];
 
-function removeTask(button, taskId) {
+function removeTask(button) {
     const row = button.closest('tr');
     row.remove();
 
-    if (taskId) {
-        deletedTasks.push(taskId);
-    }
+    reindexTasks();
 }
 
 function addSubTask() {
@@ -94,14 +90,39 @@ function addSubTask() {
 
     const row = document.createElement('tr');
     row.innerHTML = `
-                <td>
-                    <input type="checkbox" name="Tasks[].IsCompleted" value="false" />
-                    <input type="hidden" name="Tasks[].Name" value="${taskName}" />
-                    ${taskName}
-                </td>
-                <td><button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button></td>
-            `;
+        <td>
+            <input type="checkbox" name="Tasks[].IsCompleted" value="false" />
+            <input type="hidden" name="Tasks[].Id" value="0" />
+            <input type="hidden" name="Tasks[].Name" value="${taskName}" />
+            ${taskName}
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button>
+        </td>
+    `;
 
     taskContainer.appendChild(row);
     taskNameInput.value = '';
+
+    reindexTasks();
+}
+
+function validateTask(taskName, taskContainer) {
+    const existingTasks = Array.from(taskContainer.querySelectorAll('input[name$=".Name"]'));
+    return existingTasks.some(task => task.value === taskName);
+}
+
+function reindexTasks() {
+    const taskContainer = document.getElementById('SubTaskContainer');
+    const rows = Array.from(taskContainer.querySelectorAll('tr'));
+
+    rows.forEach((row, index) => {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        const hiddenId = row.querySelector('input[name$=".Id"]');
+        const hiddenName = row.querySelector('input[name$=".Name"]');
+
+        if (checkbox) checkbox.name = `Tasks[${index}].IsCompleted`;
+        if (hiddenId) hiddenId.name = `Tasks[${index}].Id`;
+        if (hiddenName) hiddenName.name = `Tasks[${index}].Name`;
+    });
 }

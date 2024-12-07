@@ -20,5 +20,25 @@ namespace ToDoListApp.Repositories
                 .ToListAsync();
         }
 
+        public async Task AddAsync(Subtask subtask)
+        {
+            _context.Subtasks.Add(subtask);
+            await SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var subtask = await _context.Subtasks.FindAsync(id);
+            if (subtask != null)
+            {
+                _context.Subtasks.Remove(subtask);
+            }
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

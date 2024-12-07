@@ -2,7 +2,10 @@
 
 <h1>Manage Subtasks</h1>
 
-<form asp-action="SaveTasks" method="post">
+<form asp-action="SaveSubtasks" method="post">
+    <input type="hidden" name="todoId" value="@ViewData["TodoId"]" />
+    <input type="hidden" name="listId" value="@ViewData["ListId"]" />
+
     <table class="table">
         <thead>
             <tr>
@@ -21,7 +24,7 @@
                         @Model[i].Name
                     </td>
                     <td>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this, @Model[i].Id)">Delete</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button>
                     </td>
                 </tr>
             }

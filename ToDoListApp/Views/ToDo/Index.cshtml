@@ -42,7 +42,7 @@
                         </form>
                     @if (todo.HasSubtasks)
                     {
-                            <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" class="btn btn-info">Show Tasks</a>
+                            <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId" class="btn btn-info">Show Tasks</a>
                     }
                     }
                 </td>
