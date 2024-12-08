@@ -1,17 +1,17 @@
 ﻿@using ToDoListApp.Areas.Admin.Models
-@model List<AdminDashboardViewModel>
+@model PaginatedUsersViewModel
 
 <h1>Admin Dashboard</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>User Email</th>
-            <th>Number of Lists</th>
+            <th>Email</th>
+            <th>List Count</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model)
+        @foreach (var user in Model.Users)
         {
             <tr>
                 <td>@user.Email</td>
@@ -20,3 +20,19 @@
         }
     </tbody>
 </table>
+
+<div>
+    @if (Model.TotalPages > 1)
+    {
+        <nav>
+            <ul class="custom-pagination">
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="@(Model.CurrentPage == i ? "active" : "")">
+                        <a href="/Admin/Admin/Index?page=@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

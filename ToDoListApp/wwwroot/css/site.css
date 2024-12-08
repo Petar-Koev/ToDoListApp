@@ -56,3 +56,38 @@ form .btn {
 .remove-button:hover {
         background-color: darkred; 
 }
+
+.custom-pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.custom-pagination li {
+    margin: 0 5px;
+}
+
+.custom-pagination a {
+    text-decoration: none;
+    color: #007bff; 
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.custom-pagination a:hover {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.active-page a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.inactive-page a {
+    background-color: white;
+    color: #007bff;
+}

@@ -31,7 +31,7 @@
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Index">Admin Dashboard</a>
+                                <a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="Index" asp-route-page="1">Admin Dashboard</a>
                             </li>
                         }
                     </ul>

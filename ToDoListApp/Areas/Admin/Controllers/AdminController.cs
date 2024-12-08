@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ToDoListApp.Areas.Admin.Models;
 using ToDoListApp.Services.Interfaces;
@@ -10,32 +9,27 @@ namespace ToDoListApp.Areas.Admin.Controllers
     [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IToDoListService _toDoListService;
+        private readonly IAdminService _adminService;
 
-        public AdminController(UserManager<IdentityUser> userManager, IToDoListService toDoListService)
+        public AdminController(IAdminService adminService)
         {
-            _userManager = userManager;
-            _toDoListService = toDoListService;
+            _adminService = adminService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var users = _userManager.Users.ToList();
-            var userListCounts = new List<AdminDashboardViewModel>();
+            int pageSize = 5;
+            var users = await _adminService.GetPaginatedUsersWithListCountsAsync(page, pageSize);
+            var totalUsers = await _adminService.GetTotalUsersCountAsync();
 
-            foreach (var user in users)
+            var model = new PaginatedUsersViewModel
             {
-                var listCount = await _toDoListService.GetListCountByUserAsync(user.Id);
-                userListCounts.Add(new AdminDashboardViewModel
-                {
-                    UserId = user.Id,
-                    Email = user.Email ?? "",
-                    ListCount = listCount
-                });
-            }
+                Users = users,
+                TotalPages = (int)Math.Ceiling(totalUsers / (double)pageSize),
+                CurrentPage = page
+            };
 
-            return View(userListCounts);
+            return View(model);
         }
     }
 }

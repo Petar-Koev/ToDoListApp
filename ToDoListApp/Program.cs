@@ -24,6 +24,7 @@ builder.Services.AddScoped<ISubtaskRepository, SubtaskRepository>();
 builder.Services.AddScoped<ISubtaskService, SubtaskService>();
 builder.Services.AddScoped<IAchievementRepository, AchievementRepository>();
 builder.Services.AddScoped<IAchievementService, AchievementService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => {
