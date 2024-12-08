@@ -2,6 +2,12 @@
 
 <h1>@Model.ListName</h1>
 
+<div class="text-center mb-3">
+    <a asp-action="Index" asp-route-listId="@TempData["CurrentListId"]" asp-route-sortOrder="priority" class="btn btn-secondary">
+        Sort by Priority
+    </a>
+</div>
+
 @if (TempData["ErrorMessage"] != null)
 {
         <div class="alert alert-danger">@TempData["ErrorMessage"]</div>

@@ -41,7 +41,7 @@
 
     <div class="mt-4">
         <button type="submit" class="btn btn-success">Save</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        <a asp-controller="ToDo" asp-action="Index" asp-route-listId="@ViewData["ListId"]" asp-route-sortOrder="default" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
 

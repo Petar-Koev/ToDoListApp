@@ -18,31 +18,40 @@ namespace ToDoListApp.Services
             _toDoListService = toDoListService;
         }
 
-        public async Task<OpenListViewModel> GetTodosByListIdAsync(int listId)
+        public async Task<OpenListViewModel> GetTodosByListIdAsync(int listId, bool sortByPriority = false)
         {
             var todos = await _repository.GetTodosByListIdAsync(listId);
             var listName = await _toDoListService.GetListNameByIdAsync(listId);
-            var model = todos.Select(t => new ToDoViewModel
+
+            var todoModels = sortByPriority
+                ? todos.OrderByDescending(todo => todo.Priority).ToList()
+                : todos;
+
+            var model = todoModels.Select(todo => new ToDoViewModel
             {
-                Id = t.Id,
-                Name = t.Name,
-                IsChecked = t.IsCompleted,
-                Priority = t.Priority,
-                Subtasks = t.Subtasks.Select(s => new SubtaskViewModel
+                Id = todo.Id,
+                Name = todo.Name,
+                Priority = todo.Priority,
+                IsChecked = todo.IsCompleted,
+                Subtasks = todo.Subtasks.Select(s => new SubtaskViewModel
                 {
                     Id = s.Id,
                     Name = s.Name,
                     IsCompleted = s.IsCompleted
                 }).ToList()
             });
+
             var viewModel = new OpenListViewModel
             {
                 ListId = listId,
                 ListName = listName,
                 Todos = model
             };
+
             return viewModel;
         }
+
+
 
         public async Task AddToDoAsync(AddToDoViewModel model)
         {

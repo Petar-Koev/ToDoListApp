@@ -5,7 +5,7 @@ namespace ToDoListApp.Services.Interfaces
 {
     public interface IToDoService
     {
-        Task<OpenListViewModel> GetTodosByListIdAsync(int listId);
+        Task<OpenListViewModel> GetTodosByListIdAsync(int listId, bool sortByPriority = false);
         Task AddToDoAsync(AddToDoViewModel model);
         Task MarkAsCheckedAsync(int id);
         Task MarkAsUncheckedAsync(int id);

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
-using ToDoListApp.Services;
 using ToDoListApp.Services.Interfaces;
 
 namespace ToDoListApp.Controllers
@@ -15,12 +14,16 @@ namespace ToDoListApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int listId)
+        public async Task<IActionResult> Index(int listId, string sortOrder = "default")
         {
             try
             {
                 TempData["CurrentListId"] = listId;
-                var viewModel = await _toDoService.GetTodosByListIdAsync(listId);
+
+                bool sortByPriority = sortOrder.Equals("priority");
+
+                var viewModel = await _toDoService.GetTodosByListIdAsync(listId, sortByPriority);
+
                 return View(viewModel);
             }
             catch (NotFoundException)
@@ -73,11 +76,6 @@ namespace ToDoListApp.Controllers
             catch (InvalidOperationException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = "An error occurred while unchecking the ToDo.";
                 return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
             }
         }
