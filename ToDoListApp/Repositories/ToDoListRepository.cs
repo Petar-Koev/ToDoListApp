@@ -53,5 +53,11 @@ namespace ToDoListApp.Repositories
             return await _context.ToDoLists.CountAsync(l => l.UserId == userId);
         }
 
+        public async Task<bool> HasListsAsync(string userId)
+        {
+            return await _context.ToDoLists.AnyAsync(l => l.UserId == userId);
+        }
+
+
     }
 }

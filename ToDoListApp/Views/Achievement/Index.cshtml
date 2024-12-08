@@ -1,0 +1,30 @@
+﻿@model AchievementViewModel
+
+<h1>Achievements</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Achieved</h2>
+        <ul class="list-group">
+            @foreach (var achievement in Model.Achieved)
+            {
+                <li class="list-group-item">
+                    <strong>@achievement.Name</strong>
+                    <p>@achievement.Description</p>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h2>Available</h2>
+        <ul class="list-group">
+            @foreach (var achievement in Model.Available)
+            {
+                <li class="list-group-item">
+                    <strong>@achievement.Name</strong>
+                    <p>@achievement.Description</p>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

@@ -9,10 +9,12 @@ namespace ToDoListApp.Services
     public class ToDoListService : IToDoListService
     {
         private readonly IToDoListRepository _toDoListRepository;
+        private readonly IAchievementService _achievementService;
 
-        public ToDoListService(IToDoListRepository toDoListRepository)
+        public ToDoListService(IToDoListRepository toDoListRepository, IAchievementService achievementService)
         {
             _toDoListRepository = toDoListRepository;
+            _achievementService = achievementService;
         }
 
         public async Task<List<ToDoListInfoViewModel>> GetListsForUserAsync(string userId)
@@ -45,7 +47,24 @@ namespace ToDoListApp.Services
                 IsDeleted = false
             };
 
+            await SaveAchievementAsync(userId);
             await _toDoListRepository.AddListAsync(newList);
+            
+        }
+
+        private async Task SaveAchievementAsync(string userId)
+        {
+            var hasOtherLists = await _toDoListRepository.HasListsAsync(userId);
+            if (!hasOtherLists)
+            {
+                const string achievementName = "First List";
+                var achievement = await _achievementService.GetAchievementByNameAsync(achievementName);
+
+                if (achievement != null)
+                {
+                    await _achievementService.AwardAchievementAsync(userId, achievement.Id);
+                }
+            }
         }
 
         public async Task<ToDoList> GetListByIdAsync(int id)

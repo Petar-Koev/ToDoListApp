@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Services.Interfaces;
 
