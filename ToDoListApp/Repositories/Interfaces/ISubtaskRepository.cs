@@ -1,5 +1,4 @@
 ﻿using ToDoListApp.Data;
-using ToDoListApp.Models;
 
 namespace ToDoListApp.Repositories.Interfaces
 {

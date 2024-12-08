@@ -73,11 +73,7 @@ namespace ToDoListApp.Services
 
         public async Task MarkAsCheckedAsync(int id)
         {
-            var todo = await _repository.GetToDoByIdAsync(id);
-            if (todo == null)
-            {
-                throw new NotFoundException($"ToDo with ID {id} not found.");
-            }
+            var todo = await GetToDoByIdAsync(id);
 
             if (todo.Subtasks.Any() && todo.Subtasks.Any(subtask => !subtask.IsCompleted))
             {
@@ -90,11 +86,7 @@ namespace ToDoListApp.Services
 
         public async Task MarkAsUncheckedAsync(int id)
         {
-            var todo = await _repository.GetToDoByIdAsync(id);
-            if (todo == null)
-            {
-                throw new NotFoundException($"ToDo with ID {id} not found.");
-            }
+            var todo = await GetToDoByIdAsync(id);
 
             todo.IsCompleted = false;
             await _repository.UpdateToDoAsync(todo);
@@ -102,11 +94,7 @@ namespace ToDoListApp.Services
 
         public async Task UpdateToDoAsync(EditToDoViewModel model)
         {
-            var todo = await _repository.GetToDoByIdAsync(model.Id);
-            if (todo == null)
-            {
-                throw new NotFoundException($"ToDo with ID {model.Id} not found.");
-            }
+            var todo = await GetToDoByIdAsync(model.Id);
 
             todo.Name = model.Name;
             todo.DueDate = model.DueDate;
@@ -127,17 +115,9 @@ namespace ToDoListApp.Services
 
         public async Task DeleteToDoAsync(int id)
         {
-            var todo = await _repository.GetToDoByIdAsync(id);
-            if (todo == null)
-            {
-                throw new NotFoundException($"ToDo with ID {id} not found.");
-            }
+            var todo = await GetToDoByIdAsync(id);
 
             await _repository.DeleteToDoAsync(todo);
         }
-
-
-
-
     }
 }

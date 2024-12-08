@@ -108,6 +108,10 @@ namespace ToDoListApp.Controllers
             {
                 return NotFound();
             }
+            catch (ArgumentException)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]

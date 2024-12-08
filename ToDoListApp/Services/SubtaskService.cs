@@ -1,4 +1,5 @@
 ﻿using ToDoListApp.Data;
+using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Repositories.Interfaces;
 using ToDoListApp.Services.Interfaces;
@@ -29,6 +30,8 @@ namespace ToDoListApp.Services
 
         public async Task SaveSubtasksAsync(int todoId, List<SubtaskViewModel> tasks)
         {
+            ValidateTasks(tasks);
+
             var existingSubtasks = await _subtaskRepository.GetSubtasksByTodoIdAsync(todoId);
 
             // Update existing subtasks
@@ -65,7 +68,30 @@ namespace ToDoListApp.Services
             await _subtaskRepository.SaveChangesAsync();
         }
 
+        private void ValidateTasks(List<SubtaskViewModel> tasks)
+        {
+            foreach (var task in tasks)
+            {
+                if (string.IsNullOrWhiteSpace(task.Name))
+                {
+                    throw new ArgumentException("Task name cannot be empty.");
+                }
 
+                if (task.Name.Length < 2 || task.Name.Length > 100)
+                {
+                    throw new ArgumentException($"Task name '{task.Name}' must be between 2 and 100 characters.");
+                }
+            }
 
+            var duplicateNames = tasks.GroupBy(t => t.Name)
+                                       .Where(g => g.Count() > 1)
+                                       .Select(g => g.Key)
+                                       .ToList();
+
+            if (duplicateNames.Any())
+            {
+                throw new ArgumentException("Duplicate tasks detected");
+            }
+        }
     }
 }

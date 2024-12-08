@@ -77,7 +77,7 @@ namespace ToDoListApp.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "An unexpected error occurred.";
+                TempData["ErrorMessage"] = "An error occurred while unchecking the ToDo.";
                 return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
             }
         }
@@ -91,7 +91,7 @@ namespace ToDoListApp.Controllers
                 await _toDoService.MarkAsUncheckedAsync(id);
                 return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occurred while unchecking the ToDo.";
                 return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
@@ -101,22 +101,24 @@ namespace ToDoListApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var todo = await _toDoService.GetToDoByIdAsync(id);
-            if (todo == null)
+            try
+            {
+                var todo = await _toDoService.GetToDoByIdAsync(id);
+                var model = new EditToDoViewModel
+                {
+                    Id = todo.Id,
+                    Name = todo.Name,
+                    DueDate = todo.DueDate,
+                    Priority = todo.Priority,
+                    ListId = todo.ListId
+                };
+
+                return View(model);
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            var model = new EditToDoViewModel
-            {
-                Id = todo.Id,
-                Name = todo.Name,
-                DueDate = todo.DueDate,
-                Priority = todo.Priority,
-                ListId = todo.ListId
-            };
-
-            return View(model);
         }
 
         [HttpPost]
@@ -133,30 +135,31 @@ namespace ToDoListApp.Controllers
                 await _toDoService.UpdateToDoAsync(model);
                 return RedirectToAction("Index", new { listId = model.ListId });
             }
-            catch (Exception ex)
+            catch (NotFoundException)
             {
-                ModelState.AddModelError("", "An error occurred while updating the ToDo.");
-                return View(model);
+                return NotFound();
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var todo = await _toDoService.GetToDoByIdAsync(id);
-            if (todo == null)
+            try
+            {
+                var todo = await _toDoService.GetToDoByIdAsync(id);
+                var model = new DeleteToDoViewModel
+                {
+                    Id = todo.Id,
+                    Name = todo.Name,
+                    ListId = todo.ListId
+                };
+
+                return View(model);
+            }
+            catch (NotFoundException)
             {
                 return NotFound();
             }
-
-            var model = new DeleteToDoViewModel
-            {
-                Id = todo.Id,
-                Name = todo.Name,
-                ListId = todo.ListId
-            };
-
-            return View(model);
         }
 
         [HttpPost]
@@ -168,16 +171,10 @@ namespace ToDoListApp.Controllers
                 await _toDoService.DeleteToDoAsync(id);
                 return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
             }
-            catch (Exception)
+            catch (NotFoundException)
             {
-                TempData["ErrorMessage"] = "An error occurred while deleting the ToDo.";
-                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+                return NotFound();
             }
         }
-
-
-
-
-
     }
 }

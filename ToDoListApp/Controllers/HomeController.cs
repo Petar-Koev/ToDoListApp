@@ -27,11 +27,20 @@ namespace ToDoListApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+
         public IActionResult CustomError(int statusCode)
         {
+            if (statusCode == 400)
+            {
+                return View("BadRequest");
+            }
             if (statusCode == 404)
             {
                 return View("NotFound");
+            }
+            if (statusCode == 500)
+            {
+                return View("InternalServerError");
             }
 
             return View("Error"); 
