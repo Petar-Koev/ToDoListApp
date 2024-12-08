@@ -32,5 +32,33 @@ namespace ToDoListApp.Repositories
             return await _context.Todos
                 .AnyAsync(t => t.Name == name && t.ListId == listId && !t.IsCompleted);
         }
+
+        public async Task<ToDo?> GetToDoByIdAsync(int id)
+        {
+            return await _context.Todos
+        .Include(todo => todo.Subtasks) 
+        .FirstOrDefaultAsync(todo => todo.Id == id);
+        }
+
+        public async Task UpdateToDoAsync(ToDo todo)
+        {
+            _context.Todos.Update(todo);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ToDo?> GetToDoByIdWithSubtasksAsync(int id)
+        {
+            return await _context.Todos
+                .Include(todo => todo.Subtasks)
+                .FirstOrDefaultAsync(todo => todo.Id == id);
+        }
+
+        public async Task DeleteToDoAsync(ToDo todo)
+        {
+            _context.Todos.Remove(todo);
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

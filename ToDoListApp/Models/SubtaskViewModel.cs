@@ -1,4 +1,5 @@
-﻿namespace ToDoListApp.Models
+﻿
+namespace ToDoListApp.Models
 {
     public class SubtaskViewModel
     {

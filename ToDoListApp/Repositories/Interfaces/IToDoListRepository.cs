@@ -10,5 +10,6 @@ namespace ToDoListApp.Repositories.Interfaces
         Task<ToDoList?> GetListByIdAsync(int id);
         Task UpdateListAsync(ToDoList list);
         Task<bool> ListNameExistsAsync(string name, string userId);
+        Task<int> GetListCountByUserAsync(string userId);
     }
 }

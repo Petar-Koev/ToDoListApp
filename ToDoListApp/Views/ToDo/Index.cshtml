@@ -2,6 +2,11 @@
 
 <h1>@Model.ListName</h1>
 
+@if (TempData["ErrorMessage"] != null)
+{
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
 <a asp-action="Add" asp-route-listId="@Model.ListId" class="btn btn-primary">Add ToDo</a>
 
 <table class="table mt-4">
@@ -37,9 +42,10 @@
                             <button type="submit" class="btn btn-primary">Check</button>
                         </form>
                         <a asp-action="Edit" asp-route-id="@todo.Id" class="btn btn-warning">Edit</a>
-                        <form asp-action="Delete" asp-route-id="@todo.Id" method="post" style="display:inline;">
+                        <form asp-action="Delete" asp-route-id="@todo.Id" method="get" style="display:inline;">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
+
                     @if (todo.HasSubtasks)
                     {
                             <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId" class="btn btn-info">Show Tasks</a>

@@ -1,0 +1,22 @@
+﻿@using ToDoListApp.Areas.Admin.Models
+@model List<AdminDashboardViewModel>
+
+<h1>Admin Dashboard</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Email</th>
+            <th>Number of Lists</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.ListCount</td>
+            </tr>
+        }
+    </tbody>
+</table>

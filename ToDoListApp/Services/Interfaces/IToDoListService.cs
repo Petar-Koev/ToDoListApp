@@ -11,5 +11,6 @@ namespace ToDoListApp.Services.Interfaces
         Task UpdateListAsync(ToDoListViewModel list);
         Task DeleteListAsync(int id);
         Task<string> GetListNameByIdAsync(int id);
+        Task<int> GetListCountByUserAsync(string userId);
     }
 }

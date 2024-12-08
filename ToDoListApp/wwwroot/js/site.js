@@ -48,6 +48,16 @@ function addTask() {
         return;
     }
 
+    if (taskName.length < 2) {
+        taskError.textContent = 'Task name must be at least 2 characters long!';
+        return;
+    }
+
+    if (taskName.length > 100) {
+        taskError.textContent = 'Task name cannot exceed 100 characters!';
+        return;
+    }
+
     const newTaskElement = createTaskElement(taskName);
 
     const hiddenInput = document.createElement('input');
@@ -85,6 +95,16 @@ function addSubTask() {
 
     if (validateTask(taskName, taskContainer)) {
         subTaskError.textContent = 'Task with the same name already exists!';
+        return;
+    }
+
+    if (taskName.length < 2) {
+        subTaskError.textContent = 'Task name must be at least 2 characters long!';
+        return;
+    }
+
+    if (taskName.length > 100) {
+        subTaskError.textContent = 'Task name cannot exceed 100 characters!';
         return;
     }
 

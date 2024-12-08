@@ -19,6 +19,7 @@ namespace ToDoListApp.Controllers
         {
             try
             {
+                TempData["CurrentListId"] = listId;
                 var viewModel = await _toDoService.GetTodosByListIdAsync(listId);
                 return View(viewModel);
             }
@@ -59,6 +60,123 @@ namespace ToDoListApp.Controllers
                 return View(model);
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Check(int id)
+        {
+            try
+            {
+                await _toDoService.MarkAsCheckedAsync(id);
+                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An unexpected error occurred.";
+                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Uncheck(int id)
+        {
+            try
+            {
+                await _toDoService.MarkAsUncheckedAsync(id);
+                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while unchecking the ToDo.";
+                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var todo = await _toDoService.GetToDoByIdAsync(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            var model = new EditToDoViewModel
+            {
+                Id = todo.Id,
+                Name = todo.Name,
+                DueDate = todo.DueDate,
+                Priority = todo.Priority,
+                ListId = todo.ListId
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditToDoViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                await _toDoService.UpdateToDoAsync(model);
+                return RedirectToAction("Index", new { listId = model.ListId });
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while updating the ToDo.");
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var todo = await _toDoService.GetToDoByIdAsync(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            var model = new DeleteToDoViewModel
+            {
+                Id = todo.Id,
+                Name = todo.Name,
+                ListId = todo.ListId
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                await _toDoService.DeleteToDoAsync(id);
+                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the ToDo.";
+                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+            }
+        }
+
+
+
 
 
     }

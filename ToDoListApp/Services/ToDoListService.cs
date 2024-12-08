@@ -86,5 +86,10 @@ namespace ToDoListApp.Services
             return list.Name;
         }
 
+        public async Task<int> GetListCountByUserAsync(string userId)
+        {
+            return await _toDoListRepository.GetListCountByUserAsync(userId);
+        }
+
     }
 }

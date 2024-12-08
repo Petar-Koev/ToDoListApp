@@ -1,0 +1,13 @@
+﻿@model DeleteToDoViewModel
+
+<h1>Delete ToDo</h1>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete the ToDo: <strong>@Model.Name</strong>?
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

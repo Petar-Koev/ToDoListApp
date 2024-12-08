@@ -1,4 +1,5 @@
 ﻿using ToDoListApp.Data;
+using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Repositories;
 using ToDoListApp.Repositories.Interfaces;
@@ -69,5 +70,74 @@ namespace ToDoListApp.Services
 
             await _repository.AddToDoAsync(todo);
         }
+
+        public async Task MarkAsCheckedAsync(int id)
+        {
+            var todo = await _repository.GetToDoByIdAsync(id);
+            if (todo == null)
+            {
+                throw new NotFoundException($"ToDo with ID {id} not found.");
+            }
+
+            if (todo.Subtasks.Any() && todo.Subtasks.Any(subtask => !subtask.IsCompleted))
+            {
+                throw new InvalidOperationException("Cannot check the ToDo until all subtasks are completed.");
+            }
+
+            todo.IsCompleted = true;
+            await _repository.UpdateToDoAsync(todo);
+        }
+
+        public async Task MarkAsUncheckedAsync(int id)
+        {
+            var todo = await _repository.GetToDoByIdAsync(id);
+            if (todo == null)
+            {
+                throw new NotFoundException($"ToDo with ID {id} not found.");
+            }
+
+            todo.IsCompleted = false;
+            await _repository.UpdateToDoAsync(todo);
+        }
+
+        public async Task UpdateToDoAsync(EditToDoViewModel model)
+        {
+            var todo = await _repository.GetToDoByIdAsync(model.Id);
+            if (todo == null)
+            {
+                throw new NotFoundException($"ToDo with ID {model.Id} not found.");
+            }
+
+            todo.Name = model.Name;
+            todo.DueDate = model.DueDate;
+            todo.Priority = model.Priority;
+
+            await _repository.UpdateToDoAsync(todo);
+        }
+
+        public async Task<ToDo> GetToDoByIdAsync(int id)
+        {
+            var todo = await _repository.GetToDoByIdAsync(id);
+            if (todo == null)
+            {
+                throw new NotFoundException($"ToDo with ID {id} not found.");
+            }
+            return todo;
+        }
+
+        public async Task DeleteToDoAsync(int id)
+        {
+            var todo = await _repository.GetToDoByIdAsync(id);
+            if (todo == null)
+            {
+                throw new NotFoundException($"ToDo with ID {id} not found.");
+            }
+
+            await _repository.DeleteToDoAsync(todo);
+        }
+
+
+
+
     }
 }

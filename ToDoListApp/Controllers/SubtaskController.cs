@@ -26,6 +26,7 @@ namespace ToDoListApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveSubtasks(int todoId, int listId,List<SubtaskViewModel> tasks)
         {
+
             await _subtaskService.SaveSubtasksAsync(todoId, tasks);
             return RedirectToAction("Index", "ToDo", new { listId });
 

@@ -48,5 +48,10 @@ namespace ToDoListApp.Repositories
                 .AnyAsync(l => l.Name == name && l.UserId == userId && !l.IsDeleted);
         }
 
+        public async Task<int> GetListCountByUserAsync(string userId)
+        {
+            return await _context.ToDoLists.CountAsync(l => l.UserId == userId);
+        }
+
     }
 }

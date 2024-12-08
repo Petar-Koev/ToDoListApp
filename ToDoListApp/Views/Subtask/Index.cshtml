@@ -3,6 +3,7 @@
 <h1>Manage Subtasks</h1>
 
 <form asp-action="SaveSubtasks" method="post">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <input type="hidden" name="todoId" value="@ViewData["TodoId"]" />
     <input type="hidden" name="listId" value="@ViewData["ListId"]" />
 
