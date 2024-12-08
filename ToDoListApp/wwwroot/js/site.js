@@ -1,9 +1,36 @@
-﻿// Add ToDo
-function validateTask(taskName, taskContainer) {
-    const existingTasks = Array.from(taskContainer.querySelectorAll('input[name^="Tasks["]')); 
+﻿// Shared functions
+
+function validateTask(taskName, taskContainer, selector) {
+    const existingTasks = Array.from(taskContainer.querySelectorAll(selector));
     return existingTasks.some(task => task.value === taskName);
 }
 
+function validateTaskInput(taskName, taskContainer, errorElement, selector) {
+    if (taskName === '') {
+        errorElement.textContent = 'Task name cannot be empty!';
+        return false;
+    }
+
+    if (validateTask(taskName, taskContainer, selector)) {
+        errorElement.textContent = 'Task with the same name already exists!';
+        return false;
+    }
+
+    if (taskName.length < 2) {
+        errorElement.textContent = 'Task name must be at least 2 characters long!';
+        return false;
+    }
+
+    if (taskName.length > 100) {
+        errorElement.textContent = 'Task name cannot exceed 100 characters!';
+        return false;
+    }
+
+    errorElement.textContent = ''; 
+    return true;
+}
+
+// Add ToDo Subtask functionality in Create ToDo
 
 function createRemoveButton(li) {
     const removeButton = document.createElement('button');
@@ -36,25 +63,7 @@ function addTask() {
     const taskError = document.getElementById('TaskError');
     const taskName = taskNameInput.value.trim();
 
-    taskError.textContent = '';
-
-    if (taskName === '') {
-        taskError.textContent = 'Task name cannot be empty!';
-        return;
-    }
-
-    if (validateTask(taskName, taskContainer)) {
-        taskError.textContent = 'Task with the same name already exists!';
-        return;
-    }
-
-    if (taskName.length < 2) {
-        taskError.textContent = 'Task name must be at least 2 characters long!';
-        return;
-    }
-
-    if (taskName.length > 100) {
-        taskError.textContent = 'Task name cannot exceed 100 characters!';
+    if (!validateTaskInput(taskName, taskContainer, taskError, 'input[name^="Tasks["]')) {
         return;
     }
 
@@ -71,7 +80,7 @@ function addTask() {
     taskNameInput.value = '';
 }
 
-// Add Subtask
+// Add ToDo Subtask functionality in Show ToDo Subtasks
 
 function removeTask(button) {
     const row = button.closest('tr');
@@ -80,56 +89,8 @@ function removeTask(button) {
     reindexTasks();
 }
 
-function addSubTask() {
-    const taskNameInput = document.getElementById('NewTaskName');
-    const taskContainer = document.getElementById('SubTaskContainer');
-    const subTaskError = document.getElementById('SubTaskError');
-    const taskName = taskNameInput.value.trim();
-
-    subTaskError.textContent = '';
-
-    if (taskName === '') {
-        subTaskError.textContent = 'Task name cannot be empty!';
-        return;
-    }
-
-    if (validateTask(taskName, taskContainer)) {
-        subTaskError.textContent = 'Task with the same name already exists!';
-        return;
-    }
-
-    if (taskName.length < 2) {
-        subTaskError.textContent = 'Task name must be at least 2 characters long!';
-        return;
-    }
-
-    if (taskName.length > 100) {
-        subTaskError.textContent = 'Task name cannot exceed 100 characters!';
-        return;
-    }
-
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td>
-            <input type="checkbox" name="Tasks[].IsCompleted" value="false" />
-            <input type="hidden" name="Tasks[].Id" value="0" />
-            <input type="hidden" name="Tasks[].Name" value="${taskName}" />
-            ${taskName}
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button>
-        </td>
-    `;
-
-    taskContainer.appendChild(row);
-    taskNameInput.value = '';
-
-    reindexTasks();
-}
-
-function validateTask(taskName, taskContainer) {
-    const existingTasks = Array.from(taskContainer.querySelectorAll('input[name$=".Name"]'));
-    return existingTasks.some(task => task.value === taskName);
+function toggleCheckboxValue(checkbox) {
+    checkbox.value = checkbox.checked ? "true" : "false";
 }
 
 function reindexTasks() {
@@ -145,4 +106,33 @@ function reindexTasks() {
         if (hiddenId) hiddenId.name = `Tasks[${index}].Id`;
         if (hiddenName) hiddenName.name = `Tasks[${index}].Name`;
     });
+}
+
+function addSubTask() {
+    const taskNameInput = document.getElementById('NewTaskName');
+    const taskContainer = document.getElementById('SubTaskContainer');
+    const subTaskError = document.getElementById('SubTaskError');
+    const taskName = taskNameInput.value.trim();
+
+    if (!validateTaskInput(taskName, taskContainer, subTaskError, 'input[name$=".Name"]')) {
+        return;
+    }
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>
+         <input type="checkbox" name="Tasks[].IsCompleted" value="false" onclick="toggleCheckboxValue(this)" />
+            <input type="hidden" name="Tasks[].Id" value="0" />
+            <input type="hidden" name="Tasks[].Name" value="${taskName}" />
+            ${taskName}
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button>
+        </td>
+    `;
+
+    taskContainer.appendChild(row);
+    taskNameInput.value = '';
+
+    reindexTasks();
 }
