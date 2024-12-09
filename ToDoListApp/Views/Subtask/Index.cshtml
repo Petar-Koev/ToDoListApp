@@ -10,7 +10,7 @@
     <input type="hidden" name="todoId" value="@ViewData["TodoId"]" />
     <input type="hidden" name="listId" value="@ViewData["ListId"]" />
 
-    <table class="table">
+    <table class="table subtask-table">
         <thead>
             <tr>
                 <th>Task</th>
@@ -25,7 +25,7 @@
                         <input type="checkbox" name="Tasks[@i].IsCompleted" value="true" @(Model[i].IsCompleted ? "checked" : "") />
                         <input type="hidden" name="Tasks[@i].Id" value="@Model[i].Id" />
                         <input type="hidden" name="Tasks[@i].Name" value="@Model[i].Name" />
-                        @Model[i].Name
+                        <span class="truncate-text">@Model[i].Name</span>
                     </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button>

@@ -15,7 +15,7 @@
 
 <a asp-action="Add" asp-route-listId="@Model.ListId" class="btn btn-primary">Add ToDo</a>
 
-<table class="table mt-4">
+<table class="table mt-4  todo-table">
     <thead>
         <tr>
             <th>Name</th>
@@ -29,7 +29,7 @@
         {
             <tr>
                 <td style="@(todo.IsChecked ? "text-decoration: line-through; color: red;" : "")">
-                    @todo.Name
+                    <span class="truncate-text">@todo.Name</span>
                 </td>
                 <td>
                     @todo.Priority.ToString()
@@ -51,7 +51,7 @@
                         <form asp-action="Delete" asp-route-id="@todo.Id" method="get" style="display:inline;">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
-                         <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId" class="btn btn-info">Show Tasks</a>
+                         <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId" class="btn btn-info">Tasks</a>
                     }
                 </td>
             </tr>

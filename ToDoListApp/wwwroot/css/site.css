@@ -95,3 +95,88 @@ form .btn {
 .achievements-area {
     margin-top: 15px;
 }
+
+.truncate-text {
+    display: inline-block; 
+    max-width: 150px; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .truncate-text {
+        max-width: 100px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .truncate-text {
+        max-width: 50px; 
+    }
+}
+
+
+
+/* Responsive styling: achievments */
+@media (max-width: 480px) {
+    .achievements-area {
+        gap: 15px;
+    }
+}
+
+
+    @media (max-width: 480px) {
+        .todolist-table .table tbody tr {
+            flex-direction: column;
+            padding: 0.5rem;
+        }
+
+        .todolist-table .table tbody td {
+            font-size: 0.875rem;
+        }
+
+            .todolist-table .table tbody td a {
+                font-size: 0.75rem;
+                padding: 0.375rem 0.75rem;
+            }
+    }
+
+/* Responsive design: Todo */
+
+@media (max-width: 480px) {
+    .todo-table tbody tr {
+        flex-direction: column;
+        padding: 0.5rem;
+    }
+
+    .todo-table tbody td {
+        font-size: 0.875rem;
+    }
+
+        .todo-table tbody td a,
+        .todo-table tbody td button {
+            font-size: 0.75rem; 
+            padding: 0.375rem 0.75rem;
+        }
+}
+
+
+/* Responsive design: Subtasks */
+
+@media (max-width: 480px) {
+    .subtask-table tbody tr {
+        flex-direction: column;
+        padding: 0.5rem;
+        margin-top: 15px;
+    }
+
+    .subtask-table tbody td {
+        font-size: 0.875rem;
+    }
+
+        .subtask-table tbody td button {
+            font-size: 0.75rem; 
+            padding: 0.375rem 0.75rem;
+        }
+}

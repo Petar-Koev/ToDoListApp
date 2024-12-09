@@ -13,8 +13,9 @@
     <a asp-action="Create" class="btn btn-primary">Add New List</a>
 </div>
 
-<div class="row mt-4">
+<div class="row mt-4 todolist-index">
     <div class="col-md-8 mx-auto">
+        <div class=" todolist-table">
         <table class="table">
             <thead>
                 <tr>
@@ -27,7 +28,7 @@
                 @foreach (var list in Model)
                 {
                     <tr>
-                        <td>@list.Name</td>
+                        <td> <span class="truncate-text">@list.Name</span></td>
                         <td>@list.CategoryName</td>
                         <td>
                             <a asp-controller="ToDo" asp-action="Index" asp-route-listId="@list.Id" class="btn btn-info">Open</a>
@@ -38,5 +39,6 @@
                 }
             </tbody>
         </table>
+        </div>
     </div>
 </div>

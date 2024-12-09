@@ -124,7 +124,7 @@ function addSubTask() {
          <input type="checkbox" name="Tasks[].IsCompleted" value="false" onclick="toggleCheckboxValue(this)" />
             <input type="hidden" name="Tasks[].Id" value="0" />
             <input type="hidden" name="Tasks[].Name" value="${taskName}" />
-            ${taskName}
+            <span class="truncate-text">${taskName}</span>
         </td>
         <td>
             <button type="button" class="btn btn-danger btn-sm" onclick="removeTask(this)">Delete</button>
