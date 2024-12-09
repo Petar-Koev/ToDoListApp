@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Services.Interfaces;
@@ -18,8 +19,6 @@ namespace ToDoListApp.Controllers
         {
             try
             {
-                TempData["CurrentListId"] = listId;
-
                 bool sortByPriority = sortOrder.Equals("priority");
 
                 var viewModel = await _toDoService.GetTodosByListIdAsync(listId, sortByPriority);
@@ -66,33 +65,33 @@ namespace ToDoListApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Check(int id)
+        public async Task<IActionResult> Check(int todoId, int listId)
         {
             try
             {
-                await _toDoService.MarkAsCheckedAsync(id);
-                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+                await _toDoService.MarkAsCheckedAsync(todoId);
+                return RedirectToAction("Index", new { listId });
             }
             catch (InvalidOperationException ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+                return RedirectToAction("Index", new { listId });
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Uncheck(int id)
+        public async Task<IActionResult> Uncheck(int todoId, int listId)
         {
             try
             {
-                await _toDoService.MarkAsUncheckedAsync(id);
-                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+                await _toDoService.MarkAsUncheckedAsync(todoId);
+                return RedirectToAction("Index", new { listId });
             }
             catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occurred while unchecking the ToDo.";
-                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+                return RedirectToAction("Index", new { listId });
             }
         }
 
@@ -162,12 +161,12 @@ namespace ToDoListApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int listId)
         {
             try
             {
                 await _toDoService.DeleteToDoAsync(id);
-                return RedirectToAction("Index", new { listId = TempData["CurrentListId"] });
+                return RedirectToAction("Index", new { listId } );
             }
             catch (NotFoundException)
             {

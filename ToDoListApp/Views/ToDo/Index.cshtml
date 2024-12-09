@@ -3,7 +3,7 @@
 <h1>@Model.ListName</h1>
 
 <div class="text-center mb-3">
-    <a asp-action="Index" asp-route-listId="@TempData["CurrentListId"]" asp-route-sortOrder="priority" class="btn btn-secondary">
+    <a asp-action="Index" asp-route-listId="@Model.ListId" asp-route-sortOrder="priority" class="btn btn-secondary">
         Sort by Priority
     </a>
 </div>
@@ -38,24 +38,20 @@
                 <td>
                     @if (todo.IsChecked)
                     {
-                        <form asp-action="Uncheck" asp-route-id="@todo.Id" method="post" style="display:inline;">
+                                <form asp-action="Uncheck" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId"method="post" style="display:inline;">
                             <button type="submit" class="btn btn-success">Uncheck</button>
                         </form>
                     }
                     else
                     {
-                        <form asp-action="Check" asp-route-id="@todo.Id" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-primary">Check</button>
-                        </form>
+                       <form asp-action="Check" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId" method="post" style="display:inline;">
+                      <button type="submit" class="btn btn-primary">Check</button>
+                      </form>
                         <a asp-action="Edit" asp-route-id="@todo.Id" class="btn btn-warning">Edit</a>
                         <form asp-action="Delete" asp-route-id="@todo.Id" method="get" style="display:inline;">
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
-
-                    @if (todo.HasSubtasks)
-                    {
-                            <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId" class="btn btn-info">Show Tasks</a>
-                    }
+                         <a asp-controller="Subtask" asp-action="Index" asp-route-todoId="@todo.Id" asp-route-listId="@Model.ListId" class="btn btn-info">Show Tasks</a>
                     }
                 </td>
             </tr>
