@@ -1,7 +1,6 @@
 ﻿using ToDoListApp.Data;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
-using ToDoListApp.Repositories;
 using ToDoListApp.Repositories.Interfaces;
 using ToDoListApp.Services.Interfaces;
 
@@ -50,8 +49,6 @@ namespace ToDoListApp.Services
 
             return viewModel;
         }
-
-
 
         public async Task AddToDoAsync(AddToDoViewModel model)
         {

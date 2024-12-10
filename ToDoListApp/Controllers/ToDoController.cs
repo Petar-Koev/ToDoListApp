@@ -77,6 +77,10 @@ namespace ToDoListApp.Controllers
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction("Index", new { listId });
             }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]

@@ -49,15 +49,14 @@ namespace ToDoListApp.Services
 
             await SaveAchievementAsync(userId);
             await _toDoListRepository.AddListAsync(newList);
-            
         }
 
-        private async Task SaveAchievementAsync(string userId)
+        public async Task SaveAchievementAsync(string userId)
         {
             var hasOtherLists = await _toDoListRepository.HasListsAsync(userId);
             if (!hasOtherLists)
             {
-                const string achievementName = "First List";
+                string achievementName = "First List";
                 var achievement = await _achievementService.GetAchievementByNameAsync(achievementName);
 
                 if (achievement != null)
