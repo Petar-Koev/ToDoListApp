@@ -20,6 +20,10 @@ namespace ToDoListApp.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User) ?? string.Empty;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return NotFound();
+            }
             var userAchievements = await _service.GetUserAchievementsAsync(userId);
             var availableAchievements = await _service.GetAvailableAchievementsAsync(userId);
 

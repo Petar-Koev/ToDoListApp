@@ -381,7 +381,7 @@ namespace ToDoListAppUnitTests
 
             _mockToDoListRepository
                 .Setup(repo => repo.GetListByIdAsync(listId))
-                .ReturnsAsync((ToDoList)null);
+                .ReturnsAsync((ToDoList?)null);
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<NotFoundException>(async () =>
@@ -429,18 +429,5 @@ namespace ToDoListAppUnitTests
             ClassicAssert.AreEqual(0, result);
             _mockToDoListRepository.Verify(repo => repo.GetListCountByUserAsync(userId), Times.Once);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

@@ -13,7 +13,7 @@ namespace ToDoListApp.Repositories
             _context = context;
         }
 
-        public async Task<List<Subtask>> GetSubtasksByTodoIdAsync(int todoId)
+        public async Task<List<Subtask>?> GetSubtasksByTodoIdAsync(int todoId)
         {
             return await _context.Subtasks
                 .Where(s => s.TodoId == todoId)

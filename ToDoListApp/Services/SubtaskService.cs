@@ -19,6 +19,10 @@ namespace ToDoListApp.Services
         public async Task<List<SubtaskViewModel>> GetSubtasksByTodoIdAsync(int todoId)
         {
             var subtasks = await _subtaskRepository.GetSubtasksByTodoIdAsync(todoId);
+            if(subtasks == null)
+            {
+                throw new NotFoundException($"Subtasks for ToDo with ID {todoId} not found.");
+            }
 
             return subtasks.Select(s => new SubtaskViewModel
             {
@@ -33,6 +37,11 @@ namespace ToDoListApp.Services
             ValidateTasks(tasks);
 
             var existingSubtasks = await _subtaskRepository.GetSubtasksByTodoIdAsync(todoId);
+
+            if (existingSubtasks == null)
+            {
+                throw new NotFoundException($"Subtasks for ToDo with ID {todoId} not found.");
+            }
 
             // Update existing subtasks
             foreach (var task in tasks.Where(t => t.Id > 0))
