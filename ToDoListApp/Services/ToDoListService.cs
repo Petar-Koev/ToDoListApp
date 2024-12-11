@@ -1,4 +1,5 @@
-﻿using ToDoListApp.Data;
+﻿using ToDoListApp.Constants;
+using ToDoListApp.Data;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Repositories.Interfaces;
@@ -34,7 +35,7 @@ namespace ToDoListApp.Services
 
             if (isDuplicateName)
             {
-                throw new ArgumentException("List name already exists.");
+                throw new ArgumentException(ErrorMessages.DuplicateListName);
             }
 
             var newList = new ToDoList
@@ -70,14 +71,14 @@ namespace ToDoListApp.Services
         {
             var list =  await _toDoListRepository.GetListByIdAsync(id);
 
-            return list ?? throw new NotFoundException($"List with ID {id} not found.");
+            return list ?? throw new NotFoundException(string.Format(ErrorMessages.ListNotFound, id));
         }
 
         public async Task UpdateListAsync(ToDoListViewModel list)
         {
             if (!list.Id.HasValue)
             {
-                throw new ArgumentException("List ID cannot be null.", nameof(list.Id));
+                throw new ArgumentException(ErrorMessages.InvalidListId);
             }
 
             var existingList = await GetListByIdAsync(list.Id.Value);

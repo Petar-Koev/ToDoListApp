@@ -1,4 +1,5 @@
-﻿using ToDoListApp.Data;
+﻿using ToDoListApp.Constants;
+using ToDoListApp.Data;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
 using ToDoListApp.Repositories.Interfaces;
@@ -58,7 +59,7 @@ namespace ToDoListApp.Services
 
             if (isDuplicateName)
             {
-                throw new ArgumentException("A ToDo with the same name already exists and is not completed.");
+                throw new ArgumentException(ErrorMessages.DuplicateToDoName);
             }
 
             var todo = new ToDo
@@ -83,7 +84,7 @@ namespace ToDoListApp.Services
 
             if (todo.Subtasks.Any() && todo.Subtasks.Any(subtask => !subtask.IsCompleted))
             {
-                throw new InvalidOperationException("Cannot check the ToDo until all subtasks are completed.");
+                throw new InvalidOperationException(ErrorMessages.UncompletedSubtasks);
             }
 
             todo.IsCompleted = true;
@@ -100,6 +101,13 @@ namespace ToDoListApp.Services
 
         public async Task UpdateToDoAsync(EditToDoViewModel model)
         {
+            var isDuplicateName = await _repository.ToDoNameExistsAsync(model.Name, model.ListId);
+
+            if (isDuplicateName)
+            {
+                throw new ArgumentException(ErrorMessages.DuplicateToDoName);
+            }
+
             var todo = await GetToDoByIdAsync(model.Id);
 
             todo.Name = model.Name;
@@ -114,7 +122,7 @@ namespace ToDoListApp.Services
             var todo = await _repository.GetToDoByIdAsync(id);
             if (todo == null)
             {
-                throw new NotFoundException($"ToDo with ID {id} not found.");
+                throw new NotFoundException(string.Format(ErrorMessages.TodoNotFound, id));
             }
             return todo;
         }

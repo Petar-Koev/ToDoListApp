@@ -12,6 +12,7 @@ using NUnit.Framework.Legacy;
 using ToDoListApp.Enums;
 using ToDoListApp.Models;
 using ToDoListApp.Exceptions;
+using ToDoListApp.Constants;
 
 namespace ToDoListAppUnitTests
 {
@@ -202,7 +203,7 @@ namespace ToDoListAppUnitTests
                 await _toDoService.AddToDoAsync(model);
             });
 
-            ClassicAssert.AreEqual("A ToDo with the same name already exists and is not completed.", ex.Message);
+            ClassicAssert.AreEqual(ErrorMessages.DuplicateToDoName, ex.Message);
             _mockToDoListService.Verify(service => service.GetListByIdAsync(model.ListId), Times.Once);
             _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Once);
             _mockRepository.Verify(repo => repo.AddToDoAsync(It.IsAny<ToDo>()), Times.Never);
@@ -223,7 +224,7 @@ namespace ToDoListAppUnitTests
 
             _mockToDoListService
                 .Setup(service => service.GetListByIdAsync(model.ListId))
-                .ThrowsAsync(new NotFoundException($"List with ID {model.ListId} not found."));
+                .ThrowsAsync(new NotFoundException(string.Format(ErrorMessages.ListNotFound, model.ListId)));
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<NotFoundException>(async () =>
@@ -231,7 +232,7 @@ namespace ToDoListAppUnitTests
                 await _toDoService.AddToDoAsync(model);
             });
 
-            ClassicAssert.AreEqual($"List with ID {model.ListId} not found.", ex.Message);
+            ClassicAssert.AreEqual(string.Format(ErrorMessages.ListNotFound, model.ListId), ex.Message);
             _mockToDoListService.Verify(service => service.GetListByIdAsync(model.ListId), Times.Once);
             _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(It.IsAny<string>(), It.IsAny<int>()), Times.Never);
             _mockRepository.Verify(repo => repo.AddToDoAsync(It.IsAny<ToDo>()), Times.Never);
@@ -298,7 +299,7 @@ namespace ToDoListAppUnitTests
                 await _toDoService.MarkAsCheckedAsync(todoId);
             });
 
-            ClassicAssert.AreEqual("Cannot check the ToDo until all subtasks are completed.", ex.Message);
+            ClassicAssert.AreEqual(ErrorMessages.UncompletedSubtasks, ex.Message);
             _mockRepository.Verify(repo => repo.GetToDoByIdAsync(todoId), Times.Once);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()), Times.Never);
         }
@@ -311,7 +312,7 @@ namespace ToDoListAppUnitTests
 
             _mockRepository
                 .Setup(repo => repo.GetToDoByIdAsync(todoId))
-                .ThrowsAsync(new NotFoundException($"ToDo with ID {todoId} not found."));
+                .ThrowsAsync(new NotFoundException(string.Format(ErrorMessages.TodoNotFound, todoId)));
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<NotFoundException>(async () =>
@@ -319,7 +320,7 @@ namespace ToDoListAppUnitTests
                 await _toDoService.MarkAsCheckedAsync(todoId);
             });
 
-            ClassicAssert.AreEqual($"ToDo with ID {todoId} not found.", ex.Message);
+            ClassicAssert.AreEqual(string.Format(ErrorMessages.TodoNotFound, todoId), ex.Message);
             _mockRepository.Verify(repo => repo.GetToDoByIdAsync(todoId), Times.Once);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()), Times.Never);
         }
@@ -362,7 +363,7 @@ namespace ToDoListAppUnitTests
 
             _mockRepository
                 .Setup(repo => repo.GetToDoByIdAsync(todoId))
-                .ThrowsAsync(new NotFoundException($"ToDo with ID {todoId} not found."));
+                .ThrowsAsync(new NotFoundException(string.Format(ErrorMessages.TodoNotFound, todoId)));
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<NotFoundException>(async () =>
@@ -370,7 +371,7 @@ namespace ToDoListAppUnitTests
                 await _toDoService.MarkAsUncheckedAsync(todoId);
             });
 
-            ClassicAssert.AreEqual($"ToDo with ID {todoId} not found.", ex.Message);
+            ClassicAssert.AreEqual(string.Format(ErrorMessages.TodoNotFound, todoId), ex.Message);
             _mockRepository.Verify(repo => repo.GetToDoByIdAsync(todoId), Times.Once);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()), Times.Never);
         }
@@ -384,7 +385,8 @@ namespace ToDoListAppUnitTests
                 Id = 1,
                 Name = "Updated ToDo",
                 DueDate = DateTime.Now.AddDays(3),
-                Priority = Priority.High
+                Priority = Priority.High,
+                ListId = 1
             };
 
             var existingToDo = new ToDo
@@ -394,6 +396,10 @@ namespace ToDoListAppUnitTests
                 DueDate = DateTime.Now.AddDays(1),
                 Priority = Priority.Medium
             };
+
+            _mockRepository
+                .Setup(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId))
+                .ReturnsAsync(false);
 
             _mockRepository
                 .Setup(repo => repo.GetToDoByIdAsync(model.Id))
@@ -411,6 +417,7 @@ namespace ToDoListAppUnitTests
             ClassicAssert.AreEqual(model.DueDate, existingToDo.DueDate);
             ClassicAssert.AreEqual(model.Priority, existingToDo.Priority);
 
+            _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Once);
             _mockRepository.Verify(repo => repo.GetToDoByIdAsync(model.Id), Times.Once);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.Is<ToDo>(todo =>
                 todo.Name == model.Name &&
@@ -418,6 +425,7 @@ namespace ToDoListAppUnitTests
                 todo.Priority == model.Priority
             )), Times.Once);
         }
+
 
         [Test]
         public void UpdateToDoAsync_ShouldThrowNotFoundException_WhenToDoDoesNotExist()
@@ -432,8 +440,12 @@ namespace ToDoListAppUnitTests
             };
 
             _mockRepository
+                .Setup(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId))
+                .ReturnsAsync(false);
+
+            _mockRepository
                 .Setup(repo => repo.GetToDoByIdAsync(model.Id))
-                .ThrowsAsync(new NotFoundException($"ToDo with ID {model.Id} not found."));
+                .ThrowsAsync(new NotFoundException(string.Format(ErrorMessages.TodoNotFound, model.Id)));
 
             // Act & Assert
             var ex = Assert.ThrowsAsync<NotFoundException>(async () =>
@@ -441,11 +453,43 @@ namespace ToDoListAppUnitTests
                 await _toDoService.UpdateToDoAsync(model);
             });
 
-            ClassicAssert.AreEqual($"ToDo with ID {model.Id} not found.", ex.Message);
+            ClassicAssert.AreEqual(string.Format(ErrorMessages.TodoNotFound, model.Id), ex.Message);
 
+            _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Once);
             _mockRepository.Verify(repo => repo.GetToDoByIdAsync(model.Id), Times.Once);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()), Times.Never);
         }
+
+        [Test]
+        public void UpdateToDoAsync_ShouldThrowArgumentException_WhenDuplicateNameExists()
+        {
+            // Arrange
+            var model = new EditToDoViewModel
+            {
+                Id = 1,
+                Name = "Duplicate ToDo Name",
+                DueDate = DateTime.Now.AddDays(3),
+                Priority = Priority.High,
+                ListId = 1
+            };
+
+            _mockRepository
+                .Setup(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId))
+                .ReturnsAsync(true); 
+
+            // Act & Assert
+            var ex = Assert.ThrowsAsync<ArgumentException>(async () =>
+            {
+                await _toDoService.UpdateToDoAsync(model);
+            });
+
+            ClassicAssert.AreEqual(ErrorMessages.DuplicateToDoName, ex.Message);
+
+            _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Once);
+            _mockRepository.Verify(repo => repo.GetToDoByIdAsync(It.IsAny<int>()), Times.Never);
+            _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()), Times.Never);
+        }
+
 
         [Test]
         public async Task GetToDoByIdAsync_ShouldReturnToDo_WhenToDoExists()
@@ -492,7 +536,7 @@ namespace ToDoListAppUnitTests
                 await _toDoService.GetToDoByIdAsync(todoId);
             });
 
-            ClassicAssert.AreEqual($"ToDo with ID {todoId} not found.", ex.Message);
+            ClassicAssert.AreEqual(string.Format(ErrorMessages.TodoNotFound, todoId), ex.Message);
             _mockRepository.Verify(repo => repo.GetToDoByIdAsync(todoId), Times.Once);
         }
 

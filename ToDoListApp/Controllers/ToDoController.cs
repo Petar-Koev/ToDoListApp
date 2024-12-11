@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
+using ToDoListApp.Services;
 using ToDoListApp.Services.Interfaces;
 
 namespace ToDoListApp.Controllers
@@ -35,6 +35,7 @@ namespace ToDoListApp.Controllers
         public IActionResult Add(int listId)
         {
             var viewModel = new AddToDoViewModel();
+            viewModel.ListId = listId;
             return View(viewModel);
         }
 
@@ -139,6 +140,11 @@ namespace ToDoListApp.Controllers
             catch (NotFoundException)
             {
                 return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError("Name", ex.Message);
+                return View(model);
             }
         }
 

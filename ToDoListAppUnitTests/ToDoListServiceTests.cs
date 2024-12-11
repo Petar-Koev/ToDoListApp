@@ -1,5 +1,6 @@
 using Moq;
 using NUnit.Framework.Legacy;
+using ToDoListApp.Constants;
 using ToDoListApp.Data;
 using ToDoListApp.Exceptions;
 using ToDoListApp.Models;
@@ -120,7 +121,7 @@ namespace ToDoListAppUnitTests
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 await _toDoListService.AddListAsync(listViewModel, userId);
-            }, "List name already exists.");
+            }, ErrorMessages.DuplicateListName);
 
             _mockToDoListRepository.Verify(repo => repo.ListNameExistsAsync(listViewModel.Name, userId), Times.Once);
             _mockToDoListRepository.Verify(repo => repo.AddListAsync(It.IsAny<ToDoList>()), Times.Never);
@@ -293,7 +294,7 @@ namespace ToDoListAppUnitTests
                 await _toDoListService.UpdateListAsync(listViewModel);
             });
 
-            ClassicAssert.AreEqual("List ID cannot be null. (Parameter 'Id')", ex.Message);
+            ClassicAssert.AreEqual(ErrorMessages.InvalidListId, ex.Message);
         }
 
         [Test]
