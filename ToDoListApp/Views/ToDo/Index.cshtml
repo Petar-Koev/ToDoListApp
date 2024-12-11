@@ -28,8 +28,8 @@
         @foreach (var todo in Model.Todos)
         {
             <tr>
-                <td style="@(todo.IsChecked ? "text-decoration: line-through; color: red;" : "")">
-                    <span class="truncate-text">@todo.Name</span>
+                <td >
+                    <span class="truncate-text @(todo.IsChecked ? "checked-item" : "")">@todo.Name</span>
                 </td>
                 <td>
                     @todo.Priority.ToString()

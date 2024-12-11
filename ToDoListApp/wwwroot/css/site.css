@@ -34,10 +34,6 @@ form .form-group:last-of-type {
     margin-bottom: 20px; 
 }
 
-form .btn {
-    margin-right: 10px;
-}
-
 #TaskContainer li {
     margin-bottom: 8px;
     list-style: none;
@@ -96,6 +92,14 @@ form .btn {
     margin-top: 15px;
 }
 
+.checked-item { 
+    text-decoration: line-through;
+    color: red;
+}
+
+.truncate-no-inline {
+    display: unset !important; 
+}
 .truncate-text {
     display: inline-block; 
     max-width: 150px; 
@@ -116,8 +120,6 @@ form .btn {
     }
 }
 
-
-
 /* Responsive styling: achievments */
 @media (max-width: 480px) {
     .achievements-area {
@@ -125,40 +127,44 @@ form .btn {
     }
 }
 
+/* Responsive styling: ToDoLists*/
 
-    @media (max-width: 480px) {
-        .todolist-table .table tbody tr {
-            flex-direction: column;
-            padding: 0.5rem;
-        }
-
-        .todolist-table .table tbody td {
-            font-size: 0.875rem;
-        }
-
-            .todolist-table .table tbody td a {
-                font-size: 0.75rem;
-                padding: 0.375rem 0.75rem;
-            }
+@media (min-width: 768px) and (max-width: 1000px) {
+    .col-md-8 {
+        width: auto; 
+        max-width: 90%; 
+        margin: 0 auto;
     }
+}
+
+@media (max-width: 480px) {
+    .todolist-table .table tbody tr {
+         flex-direction: column;
+         padding: 0.5rem;
+    }
+
+    .todolist-table .table tbody td {
+        font-size: 0.875rem;
+    }
+
+    .todolist-table .table tbody td a {
+         font-size: 0.75rem;
+         padding: 0.375rem 0.75rem;
+    }
+}
 
 /* Responsive design: Todo */
 
 @media (max-width: 480px) {
-    .todo-table tbody tr {
-        flex-direction: column;
-        padding: 0.5rem;
-    }
-
     .todo-table tbody td {
         font-size: 0.875rem;
     }
 
-        .todo-table tbody td a,
-        .todo-table tbody td button {
-            font-size: 0.75rem; 
-            padding: 0.375rem 0.75rem;
-        }
+    .todo-table tbody td a,
+    .todo-table tbody td button {
+        font-size: 0.55rem; 
+        padding: 0.375rem 0.75rem;
+    }
 }
 
 
@@ -175,8 +181,8 @@ form .btn {
         font-size: 0.875rem;
     }
 
-        .subtask-table tbody td button {
-            font-size: 0.75rem; 
-            padding: 0.375rem 0.75rem;
-        }
+    .subtask-table tbody td button {
+        font-size: 0.75rem; 
+        padding: 0.375rem 0.75rem;
+    }
 }
