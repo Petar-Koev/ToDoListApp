@@ -377,13 +377,13 @@ namespace ToDoListAppUnitTests
         }
 
         [Test]
-        public async Task UpdateToDoAsync_ShouldUpdateToDo_WhenInputIsValid()
+        public async Task UpdateToDoAsync_ShouldUpdateToDo_WhenNameIsNotChanged()
         {
             // Arrange
             var model = new EditToDoViewModel
             {
                 Id = 1,
-                Name = "Updated ToDo",
+                Name = "Existing ToDo Name", 
                 DueDate = DateTime.Now.AddDays(3),
                 Priority = Priority.High,
                 ListId = 1
@@ -392,14 +392,10 @@ namespace ToDoListAppUnitTests
             var existingToDo = new ToDo
             {
                 Id = model.Id,
-                Name = "Old ToDo",
+                Name = "Existing ToDo Name", 
                 DueDate = DateTime.Now.AddDays(1),
                 Priority = Priority.Medium
             };
-
-            _mockRepository
-                .Setup(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId))
-                .ReturnsAsync(false);
 
             _mockRepository
                 .Setup(repo => repo.GetToDoByIdAsync(model.Id))
@@ -413,19 +409,62 @@ namespace ToDoListAppUnitTests
             await _toDoService.UpdateToDoAsync(model);
 
             // Assert
+            ClassicAssert.AreEqual(model.DueDate, existingToDo.DueDate);
+            ClassicAssert.AreEqual(model.Priority, existingToDo.Priority);
+            _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(It.IsAny<string>(), It.IsAny<int>()), Times.Never);
+            _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.Is<ToDo>(todo =>
+                todo.DueDate == model.DueDate &&
+                todo.Priority == model.Priority
+            )), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateToDoAsync_ShouldUpdateToDo_WhenNameIsChangedAndNotDuplicate()
+        {
+            // Arrange
+            var model = new EditToDoViewModel
+            {
+                Id = 1,
+                Name = "New ToDo Name", 
+                DueDate = DateTime.Now.AddDays(3),
+                Priority = Priority.High,
+                ListId = 1
+            };
+
+            var existingToDo = new ToDo
+            {
+                Id = model.Id,
+                Name = "Old ToDo Name", 
+                DueDate = DateTime.Now.AddDays(1),
+                Priority = Priority.Medium
+            };
+
+            _mockRepository
+                .Setup(repo => repo.GetToDoByIdAsync(model.Id))
+                .ReturnsAsync(existingToDo);
+
+            _mockRepository
+                .Setup(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId))
+                .ReturnsAsync(false); 
+
+            _mockRepository
+                .Setup(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _toDoService.UpdateToDoAsync(model);
+
+            // Assert
             ClassicAssert.AreEqual(model.Name, existingToDo.Name);
             ClassicAssert.AreEqual(model.DueDate, existingToDo.DueDate);
             ClassicAssert.AreEqual(model.Priority, existingToDo.Priority);
-
             _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Once);
-            _mockRepository.Verify(repo => repo.GetToDoByIdAsync(model.Id), Times.Once);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.Is<ToDo>(todo =>
                 todo.Name == model.Name &&
                 todo.DueDate == model.DueDate &&
                 todo.Priority == model.Priority
             )), Times.Once);
         }
-
 
         [Test]
         public void UpdateToDoAsync_ShouldThrowNotFoundException_WhenToDoDoesNotExist()
@@ -455,23 +494,35 @@ namespace ToDoListAppUnitTests
 
             ClassicAssert.AreEqual(string.Format(ErrorMessages.TodoNotFound, model.Id), ex.Message);
 
-            _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Once);
+            _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Never);
             _mockRepository.Verify(repo => repo.GetToDoByIdAsync(model.Id), Times.Once);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()), Times.Never);
         }
 
         [Test]
-        public void UpdateToDoAsync_ShouldThrowArgumentException_WhenDuplicateNameExists()
+        public void UpdateToDoAsync_ShouldThrowArgumentException_WhenNameIsChangedAndDuplicateExists()
         {
             // Arrange
             var model = new EditToDoViewModel
             {
                 Id = 1,
-                Name = "Duplicate ToDo Name",
+                Name = "Duplicate ToDo Name", 
                 DueDate = DateTime.Now.AddDays(3),
                 Priority = Priority.High,
                 ListId = 1
             };
+
+            var existingToDo = new ToDo
+            {
+                Id = model.Id,
+                Name = "Old ToDo Name", 
+                DueDate = DateTime.Now.AddDays(1),
+                Priority = Priority.Medium
+            };
+
+            _mockRepository
+                .Setup(repo => repo.GetToDoByIdAsync(model.Id))
+                .ReturnsAsync(existingToDo);
 
             _mockRepository
                 .Setup(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId))
@@ -484,12 +535,9 @@ namespace ToDoListAppUnitTests
             });
 
             ClassicAssert.AreEqual(ErrorMessages.DuplicateToDoName, ex.Message);
-
             _mockRepository.Verify(repo => repo.ToDoNameExistsAsync(model.Name, model.ListId), Times.Once);
-            _mockRepository.Verify(repo => repo.GetToDoByIdAsync(It.IsAny<int>()), Times.Never);
             _mockRepository.Verify(repo => repo.UpdateToDoAsync(It.IsAny<ToDo>()), Times.Never);
         }
-
 
         [Test]
         public async Task GetToDoByIdAsync_ShouldReturnToDo_WhenToDoExists()

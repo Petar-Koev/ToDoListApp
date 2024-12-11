@@ -101,14 +101,17 @@ namespace ToDoListApp.Services
 
         public async Task UpdateToDoAsync(EditToDoViewModel model)
         {
-            var isDuplicateName = await _repository.ToDoNameExistsAsync(model.Name, model.ListId);
-
-            if (isDuplicateName)
-            {
-                throw new ArgumentException(ErrorMessages.DuplicateToDoName);
-            }
-
             var todo = await GetToDoByIdAsync(model.Id);
+
+            // Check for duplicate name only if the name is being changed!
+            if (!string.Equals(todo.Name, model.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                var isDuplicateName = await _repository.ToDoNameExistsAsync(model.Name, model.ListId);
+                if (isDuplicateName)
+                {
+                    throw new ArgumentException(ErrorMessages.DuplicateToDoName);
+                }
+            }
 
             todo.Name = model.Name;
             todo.DueDate = model.DueDate;
@@ -116,6 +119,7 @@ namespace ToDoListApp.Services
 
             await _repository.UpdateToDoAsync(todo);
         }
+
 
         public async Task<ToDo> GetToDoByIdAsync(int id)
         {
